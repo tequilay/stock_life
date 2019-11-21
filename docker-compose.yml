@@ -1,0 +1,21 @@
+version: "3"
+services:
+  db:
+    image: "postgres:12.0-alpine"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+  server:
+    tty: true
+    stdin_open: true
+    build: .
+    command: "bundle exec rails server -b 0.0.0.0"
+    volumes:
+      - .:/myapp
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+    depends_on:
+      - db
